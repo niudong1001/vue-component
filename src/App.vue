@@ -1,67 +1,14 @@
 <template>
   <div id="app">
-    <quill-editor :options="options"></quill-editor>
+    <router-view>
+    </router-view>
   </div>
 </template>
 
 <script>
 
 export default {
-  name: 'App',
-  data(){
-    return {
-      options:{
-        modules:{
-          toolbar: [
-            ['bold', 'italic', 'underline', 'strike'],
-            ['blockquote', 'code-block'],
-            [{ 'header': 1 }, { 'header': 2 },{ 'header': 3 }],
-            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-            [{ 'script': 'sub'}, { 'script': 'super' }],
-            [{ 'indent': '-1'}, { 'indent': '+1' }],
-            [{ 'direction': 'rtl' }],
-            [{ 'size': ['small', false, 'large', 'huge'] }],
-            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-            [{ 'color': [] }, { 'background': [] }],
-            [{ 'font': [] }],
-            [{ 'align': [] }],
-            ['clean'],
-            ['link', 'image', 'video']
-          ]
-        },
-        file:{
-          imageIcon: "<i class=''>File</i>",  // replace image icon
-          maxFileSize: 50, // unit is 'M'
-          extensions: ['png', 'jpg', 'txt', 'pdf', 'pptx'],
-          invalidUploadCallback: this.invalidUploadCallback,  // invoke when some error happened
-          uploadFileCallback: this.uploadFileCallback,  // upload file to a server, callback a url
-          whitelist:{  // just property in whitelist will be reserved
-            enable:false,
-            list:{
-              font:['bold',"italic","underline"],
-              color:[],
-              size:[],
-              bg:[],
-              align:[]
-            }
-          }
-        }
-      }
-    }
-  },
-  methods:{
-    invalidUploadCallback(msg){
-      console.log(msg)
-    },
-    uploadFileCallback(file, callback){
-
-      // upload to server, need you add
-
-      // callback
-      let url="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540293184581&di=8412eac97e60eb633d156900cfbd1dac&imgtype=0&src=http%3A%2F%2Fwww.znsfagri.com%2Fuploadfile%2Feditor%2Fimage%2F20170626%2F20170626151136_11631.jpg";  // fake url
-      callback(url)
-    }
-  }
+  name: 'App'
 }
 </script>
 

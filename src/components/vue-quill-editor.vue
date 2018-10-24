@@ -60,8 +60,8 @@
           ]
         },
         defaultFileOptions :{
-            maxFileSize: 50,
-            extensions: ['png', 'jpg', 'txt', 'pdf', 'pptx', 'jpeg']
+          extensions: ['png', 'jpg', 'jpeg', 'bmp', 'txt', 'pdf', 'pptx'],
+          maxFileSize: 50
         }
       }
     },
@@ -70,7 +70,7 @@
       disabled: Boolean,
       placeholder:{
         type:String,
-        default: "Input some text..."
+        default: "Type some text..."
       },
       options: {
         type: Object,
@@ -90,6 +90,7 @@
       initialize: function() {
         let vm = this
         if (this.$el) {
+
           // When pasting some text, only some formats can be inherited
           // This set will influence some toolbar's function.
           if(this.options.file&&this.options.file.whitelist.enable){
@@ -187,33 +188,41 @@
         const input = document.createElement('input');
         input.setAttribute('type', 'file');
         input.click();
+        let maxFileSize;
+        let fileExtensions
+        if(vm.options.file){
+          fileExtensions = vm.options.file.extensions  // valid extensions
+          maxFileSize = vm.options.file.maxFileSize  // Unit is 'M'
+        }
+        else{
+          fileExtensions = vm.defaultFileOptions.extensions
+          maxFileSize = vm.defaultFileOptions.maxFileSize
+        }
         input.onchange = () => {
-          let maxFileSize;
-          let fileExtensions
-          if(vm.options.file){
-            fileExtensions = vm.options.file.extensions  // valid extensions
-            maxFileSize = vm.options.file.maxFileSize  // Unit is 'M'
-          }
-          else{
-            fileExtensions = vm.defaultFileOptions.extensions
-            maxFileSize = vm.defaultFileOptions.maxFileSize
-          }
-          const file = input.files[0];  // just use one file upload
+
+          // just use one file upload
+          const file = input.files[0];  
+
           // test file type
           var patt_str = "("+fileExtensions.join("|")+")";
           var patt=new RegExp(patt_str, "i");
+
           // console.log(patt_str, patt, file.type);
           if(!patt.test(file.type)){
-            if(vm.options.file) vm.options.file.invalidUploadCallback("Error: File type is not in the extensions params.")
-            else console.log("Error: File type is not in the extensions params.")
+            let wrongMsg = "Error: File type is not in the extensions params.";
+            if(vm.options.file) vm.options.file.invalidUploadCallback(wrongMsg)
+            else console.log(wrongMsg)
             return
           }
+
           // test file size
           if(file.size/1024/1024 > maxFileSize){
-            if(vm.options.file) vm.options.file.invalidUploadCallback("Error: File size exceed maxFileSize params.")
-            else console.log("Error: File size exceed maxFileSize params.")
+            let wrongMsg = "Error: File size exceed maxFileSize params.";
+            if(vm.options.file) vm.options.file.invalidUploadCallback(wrongMsg)
+            else console.log(wrongMsg)
             return
           }
+
           vm.saveToServer(file, editor);
         };
       },
