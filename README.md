@@ -18,7 +18,7 @@
 使用方式：
 
 - 安装依赖：`npm install --save quill`
-- 获得组件：移动`src/components/vue-quill-editor.vue`到您的组件文件夹并注册这个组件
+- 获得并注册组件：移动`src/components/vue-quill-editor.vue`到您的组件文件夹并注册这个组件
 - 使用组件：按照例子[Quill-Editor-Test](./src/views/quill-editor-test.vue)中的方式使用该组件
 
 ### vue-input-dialog
@@ -104,8 +104,16 @@ dialogOptions:{
 使用方式：
 
 - 安装依赖：`npm i element-ui -S`
-- 使用并注册：`vue-quill-editor`插件
-- 导入Element-ui:
+- 获得并注册组件：移动`src/components/`下`vue-quill-editor`跟`vue-input-dialog`组件到您的组件目录并注册它们:
+
+```js
+import vueQuillEditor from "./components/vue-quill-editor";
+Vue.component("quill-editor",vueQuillEditor);
+import inputDialog from "./components/vue-input-dialog";
+Vue.component("input-dialog",inputDialog);
+```
+
+- 使用Element-ui:
 
 ```js
 import ElementUI from 'element-ui'
@@ -113,4 +121,4 @@ import 'element-ui/lib/theme-chalk/index.css';
 Vue.use(ElementUI)
 ```
 
-- 使用插件: 使用方式请查看[Vue-Input-Dialog](./src/views/input-dialog-test.vue)
+- 使用本组件: 使用方式请查看[Vue-Input-Dialog](./src/views/input-dialog-test.vue)
