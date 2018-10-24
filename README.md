@@ -18,4 +18,5 @@
 使用方式：
 
 - 安装依赖：`npm install --save quill`
-- 移动`src/components/vue-quill-editor.vue`到您的组件文件夹并注册这个组件，接着按照例子[Quill-Editor-Test](./src/views/quill-editor-test.vue)中的方式使用。
+- 获得组件：移动`src/components/vue-quill-editor.vue`到您的组件文件夹并注册这个组件
+- 使用组件：按照例子[Quill-Editor-Test](./src/views/quill-editor-test.vue)中的方式使用该组件
