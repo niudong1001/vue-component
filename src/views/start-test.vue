@@ -1,7 +1,10 @@
 <template>
   <div>
     <router-link to="/quill-editor-test">Test Vue-Quill-Editor</router-link>
-    <router-view style="margin-top:2em"></router-view>
+    <br>
+    <router-link to="/input-dialog-test">Test Vue-Input-Dialog</router-link>
+    <hr style="margin:2em 0 2em 0">
+    <router-view></router-view>
   </div>
 </template>
 
@@ -17,7 +20,7 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style>
 h1, h2 {
   font-weight: normal;
 }

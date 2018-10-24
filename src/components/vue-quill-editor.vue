@@ -41,7 +41,7 @@
     data: function() {
       return {
         _content: '',
-        defaultModules: {
+        defaultModuleOptions: {
           toolbar: [
             ['bold', 'italic', 'underline', 'strike'],
             ['blockquote', 'code-block'],
@@ -60,8 +60,19 @@
           ]
         },
         defaultFileOptions :{
-          extensions: ['png', 'jpg', 'jpeg', 'bmp', 'txt', 'pdf', 'pptx'],
-          maxFileSize: 50
+          imageIcon: "",  // replace the image icon
+          maxFileSize: 50, // unit is 'M'
+          extensions: ['png', 'jpg', 'jpeg', 'bmp', 'txt', 'pdf', 'pptx'],  // include image and file
+          whitelist:{  // just property value in the whitelist will be reserved
+            enable:false,
+            list:{
+              font:['bold',"italic","underline"],
+              color:[],
+              size:[],
+              bg:[],
+              align:[]
+            }
+          }
         }
       }
     },
@@ -72,7 +83,18 @@
         type:String,
         default: "Type some text..."
       },
+      errorHander:{
+        type:Function,
+        require:true
+      },
       options: {
+        type: Object,
+        required: false,
+        default: function() {
+          return {}
+        }
+      },
+      fileOptions:{
         type: Object,
         required: false,
         default: function() {
@@ -88,13 +110,13 @@
     },
     methods: {
       initialize: function() {
-        let vm = this
+        let self = this
         if (this.$el) {
-
           // When pasting some text, only some formats can be inherited
           // This set will influence some toolbar's function.
-          if(this.options.file&&this.options.file.whitelist.enable){
-              let whitelist = this.options.file.whitelist.list;
+          let _whitelist = this.fileOptions.whitelist || this.defaultFileOptions.whitelist
+          if(_whitelist.enable){
+              let whitelist = _whitelist.list;
               var Font = Quill.import('formats/font');
               var Color = Quill.import('formats/color');
               var Size = Quill.import('formats/size');
@@ -111,30 +133,27 @@
               Quill.register(Bg, true);
               Quill.register(Align, true);
           }
-
           // Change image icon, merge image upload and file upload
-          if(this.options.file&&this.options.file.imageIcon){
+          let imageIcon = this.fileOptions.imageIcon || 
+          this.defaultFileOptions.imageIcon;
+          if(imageIcon){
             var icons = Quill.import('ui/icons');
-            icons['image'] = this.options.file.imageIcon;
+            icons['image'] = imageIcon;
           }
-            
           // options and instance
-          var self = this
-          self.options.theme = self.options.theme || 'snow'
+          self.options.theme = self.options.theme || 'snow';
           self.options.boundary = self.options.boundary || document.body
-          self.options.modules = self.options.modules || self.defaultModules
+          self.options.modules = self.options.modules || self.defaultModuleOptions
           self.options.modules.toolbar = self.options.modules.toolbar !== undefined
                                           ? self.options.modules.toolbar
-                                          : self.defaultModules.toolbar
+                                          : self.defaultModuleOptions.toolbar
           self.options.placeholder = self.placeholder||self.options.placeholder
           self.options.readOnly = self.options.readOnly !== undefined ? self.options.readOnly : false
           self.quill = new Quill(self.$refs.editor, self.options)
-
           // set editor content
           if (self.content) {
             self.quill.pasteHTML(self.content)
           }
-
           // mark model as touched if editor lost focus
           self.quill.on('selection-change', (range) => {
             if (!range) {
@@ -143,7 +162,6 @@
               self.$emit('focus', self.quill)
             }
           })
-
           // update model if text changes
           self.quill.on('text-change', (delta, oldDelta, source) => {
             var html = self.$refs.editor.children[0].innerHTML
@@ -157,73 +175,68 @@
               text: text
             })
           })
-
           // upload image or file
           self.quill.getModule('toolbar').addHandler('image', () => {
-            vm.selectLocalFile(self.quill);
+            self.selectLocalFile(self.quill);
           });
-
           // disabled
           if (this.disabled) {
             this.quill.enable(false)
           };
-
           // emit ready
           self.$emit('ready', self.quill)
         }
       },
       saveToServer(file,editor) {
         let vm = this
-        if(vm.options.file){
-          vm.options.file.uploadFileCallback(file, function(url){
+        if(vm.fileOptions.uploadFileCallback){
+          vm.fileOptions.uploadFileCallback(file, function(url){
             vm.insertToEditor(url, file, editor);
           })
         }
         else{
-          vm.options.file.invalidUploadCallback("Error: Need have a uploadFileCallback hander.")
+          vm.handerError(-1, "Need have a uploadFileCallback hander!")
         }
       },
+      handerError(code, msg){
+        this.errorHander(code, msg);
+      },
       selectLocalFile(editor) {
-        let vm = this
+        let vm = this;
+        let maxFileSize = vm.fileOptions.maxFileSize || vm.defaultFileOptions.maxFileSize;
+        let fileExtensions = vm.fileOptions.extensions || vm.defaultFileOptions.extensions;
         const input = document.createElement('input');
         input.setAttribute('type', 'file');
         input.click();
-        let maxFileSize;
-        let fileExtensions
-        if(vm.options.file){
-          fileExtensions = vm.options.file.extensions  // valid extensions
-          maxFileSize = vm.options.file.maxFileSize  // Unit is 'M'
-        }
-        else{
-          fileExtensions = vm.defaultFileOptions.extensions
-          maxFileSize = vm.defaultFileOptions.maxFileSize
-        }
         input.onchange = () => {
-
           // just use one file upload
           const file = input.files[0];  
-
           // test file type
           var patt_str = "("+fileExtensions.join("|")+")";
           var patt=new RegExp(patt_str, "i");
-
+          let haveWong=false;
+          let wrongMsg="";
+          let wrongCode=null;
           // console.log(patt_str, patt, file.type);
-          if(!patt.test(file.type)){
-            let wrongMsg = "Error: File type is not in the extensions params.";
-            if(vm.options.file) vm.options.file.invalidUploadCallback(wrongMsg)
-            else console.log(wrongMsg)
-            return
+          if(!patt.test(file.type)) {
+            wrongMsg = "File type is not in the extensions params!";
+            haveWong=true;
+            wrongCode=10
           }
-
           // test file size
           if(file.size/1024/1024 > maxFileSize){
-            let wrongMsg = "Error: File size exceed maxFileSize params.";
-            if(vm.options.file) vm.options.file.invalidUploadCallback(wrongMsg)
-            else console.log(wrongMsg)
-            return
+            wrongMsg = "File size exceed maxFileSize params!";
+            haveWong=true;
+            wrongCode=11
+          } 
+          // display wrong information
+          if(haveWong){
+            vm.handerError(wrongCode, wrongMsg)
+            return;
           }
-
+          // save to server
           vm.saveToServer(file, editor);
+
         };
       },
       insertToEditor(url, file, editor) {

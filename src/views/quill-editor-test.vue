@@ -1,6 +1,11 @@
 <template>
   <div>
-    <quill-editor :options="options" :content="content" :disable="disable" :placeholder="placeholder">
+    <quill-editor 
+      :options="options" 
+      :fileOptions="fileOptions"
+      :content="content" 
+      :disabled="disabled" 
+      :placeholder="placeholder">
     </quill-editor>
   </div>
 </template>
@@ -11,8 +16,9 @@ export default {
   data(){
     return {
       content: "Hello world!",
-      disable: false,
       placeholder: "Input some text...",
+      disabled: false,
+      errorHander: this.errorHander,
       options:{
         modules:{
           toolbar: [
@@ -31,33 +37,36 @@ export default {
             ['clean'],
             ['link', 'image', 'video']
           ]
-        },
-        file:{
-          imageIcon: "<i class=''>File</i>",  // replace the image icon
-          maxFileSize: 50, // unit is 'M'
-          extensions: ['png', 'jpg', 'jpeg', 'bmp', 'txt', 'pdf', 'pptx'],  // include image and file
-          invalidUploadCallback: this.invalidUploadCallback,  // invoke when some error happened
-          uploadFileCallback: this.uploadFileCallback,  // upload file to a server, callback a url
-          whitelist:{  // just property value in the whitelist will be reserved
-            enable:false,
-            list:{
-              font:['bold',"italic","underline"],
-              color:[],
-              size:[],
-              bg:[],
-              align:[]
-            }
+        }
+      },
+      fileOptions:{
+        imageIcon: "<i class=''>File</i>",  // replace the image icon
+        maxFileSize: 50, // unit is 'M'
+        extensions: ['png', 'jpg', 'jpeg', 'bmp', 'txt', 'pdf', 'pptx'],  // include image and file
+        invalidUploadCallback: this.invalidUploadCallback,  // invoke when some error happened
+        uploadFileCallback: this.uploadFileCallback,  // upload file to a server, callback a url
+        whitelist:{  // just property value in the whitelist will be reserved
+          enable:true,
+          list:{
+            font:['bold',"italic","underline"],
+            color:[],
+            size:[],
+            bg:[],
+            align:[]
           }
         }
       }
     }
   },
   methods:{
-    invalidUploadCallback(msg){
-      alert(msg);
+    errorHander(wrongCode, wrongMsg){
+        alert("Error: "+wrongMsg);
+    },
+    invalidUploadCallback(wrongCode, wrongMsg){
+      alert("Error: "+wrongMsg);
     },
     uploadFileCallback(file, callback){
-      // upload to server, need you add
+      // upload file to server, need you add
       // callback
       let url="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540293184581&di=8412eac97e60eb633d156900cfbd1dac&imgtype=0&src=http%3A%2F%2Fwww.znsfagri.com%2Fuploadfile%2Feditor%2Fimage%2F20170626%2F20170626151136_11631.jpg";  // fake url
       callback(url);

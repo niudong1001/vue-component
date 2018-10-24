@@ -6,8 +6,16 @@ import router from './router'
 
 Vue.config.productionTip = false
 
-import VueQuillEditor from "./components/vue-quill-editor";
-Vue.component("quill-editor",VueQuillEditor);
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css';
+Vue.use(ElementUI)
+
+// Register components
+import vueQuillEditor from "./components/vue-quill-editor";
+Vue.component("quill-editor",vueQuillEditor);
+import inputDialog from "./components/vue-input-dialog";
+Vue.component("input-dialog",inputDialog);
+
 
 /* eslint-disable no-new */
 new Vue({
