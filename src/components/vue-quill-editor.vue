@@ -83,10 +83,6 @@
         type:String,
         default: "Type some text..."
       },
-      errorHander:{
-        type:Function,
-        require:true
-      },
       options: {
         type: Object,
         required: false,
@@ -103,6 +99,9 @@
       }
     },
     mounted: function() {
+      if(!this.fileOptions.errorHander){
+        alert("Need have a errorHander!")
+      }
       this.initialize()
     },
     beforeDestroy: function() {
@@ -199,7 +198,7 @@
         }
       },
       handerError(code, msg){
-        this.errorHander(code, msg);
+        this.fileOptions.errorHander(code, msg);
       },
       selectLocalFile(editor) {
         let vm = this;

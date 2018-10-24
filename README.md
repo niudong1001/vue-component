@@ -72,7 +72,7 @@ dialogOptions:{
 
           },
           fileOptions:{
-
+            errorHander: this.dialogErrorHander  // must have it
           }
         },
         img:{ // valid when type is img
@@ -103,7 +103,8 @@ dialogOptions:{
 
 使用方式：
 
-- 安装依赖：`npm i element-ui -S`, `vue-quill-editor`
+- 安装依赖：`npm i element-ui -S`
+- 使用并注册：`vue-quill-editor`插件
 - 导入Element-ui:
 
 ```js
@@ -112,4 +113,4 @@ import 'element-ui/lib/theme-chalk/index.css';
 Vue.use(ElementUI)
 ```
 
-- 使用插件: 使用方式请查看[vue-input-dialog](./src/views/input-dialog-test.vue)
+- 使用插件: 使用方式请查看[Vue-Input-Dialog](./src/views/input-dialog-test.vue)

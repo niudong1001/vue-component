@@ -31,7 +31,7 @@ export default {
             input:{
               // element valid type: 'text', 'textarea', <other valid type>
               // other valid type: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#Form_%3Cinput%3E_types
-              type: 'text', // "select"||"richText"||"img"||<element valid type>,
+              type: 'img', // "select"||"richText"||"img"||<element valid type>,
               data:"", // save value for single col
               class: "",  // class for content
               placeholder:"Input..", 
@@ -58,7 +58,7 @@ export default {
 
                 },
                 fileOptions:{
-
+                  errorHander: this.dialogErrorHander  // must have it
                 }
               },
               img:{ // valid when type is img
@@ -68,7 +68,7 @@ export default {
                 saveToServerHander: this.imgSaveToServerHander
               },
 
-              isTwoCols:true,  // just have text and richText type
+              isTwoCols:false,  // just have text and richText type
               twoCols:{  // valid when isTwoCols is true
                 data1: "",
                 data2: "",

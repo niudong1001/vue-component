@@ -18,7 +18,6 @@ export default {
       content: "Hello world!",
       placeholder: "Input some text...",
       disabled: false,
-      errorHander: this.errorHander,
       options:{
         modules:{
           toolbar: [
@@ -40,6 +39,7 @@ export default {
         }
       },
       fileOptions:{
+        errorHander: this._errorHander,
         imageIcon: "<i class=''>File</i>",  // replace the image icon
         maxFileSize: 50, // unit is 'M'
         extensions: ['png', 'jpg', 'jpeg', 'bmp', 'txt', 'pdf', 'pptx'],  // include image and file
@@ -59,11 +59,8 @@ export default {
     }
   },
   methods:{
-    errorHander(wrongCode, wrongMsg){
+    _errorHander(wrongCode, wrongMsg){
         alert("Error: "+wrongMsg);
-    },
-    invalidUploadCallback(wrongCode, wrongMsg){
-      alert("Error: "+wrongMsg);
     },
     uploadFileCallback(file, callback){
       // upload file to server, need you add
