@@ -26,7 +26,7 @@
 							<!-- richText -->
 			  			<quill-editor 
 								v-if="item.input.type=='richText'"
-								:content="item.input.data"
+								v-model="item.input.data"
 				  			:ref="item.id"
 								:class="item.input.class"
 				  			:options="item.input.richText.options"
@@ -48,7 +48,7 @@
 							<el-row>
 								<el-col :span="12">
 									<quill-editor 
-										:content="item.input.twoCols.data1"
+										v-model="item.input.twoCols.data1"
 										:placeholder="item.input.twoCols.placeholder1"
 						  			:options="item.input.richText.options"
 										:fileOptions="item.input.richText.fileOptions"
@@ -56,11 +56,13 @@
 					  			</quill-editor>
 									<el-input v-model="item.input.twoCols.data1" 
 									:placeholder="item.input.twoCols.placeholder1" 
-									v-if="item.input.type=='text'"></el-input>
+									:type="item.input.type"
+									v-else
+									></el-input>
 								</el-col>
 								<el-col :span="12">
 									<quill-editor 
-										:content="item.input.twoCols.data2"
+										v-model="item.input.twoCols.data2"
 										:placeholder="item.input.twoCols.placeholder2"
 						  			:options="item.input.richText.options"
 										:fileOptions="item.input.richText.fileOptions"
@@ -68,7 +70,8 @@
 					  			</quill-editor>
 									<el-input v-model="item.input.twoCols.data2" 
 									:placeholder="item.input.twoCols.placeholder2" 
-									v-if="item.input.type=='text'"></el-input>
+									:type="item.input.type"
+									v-else></el-input>
 								</el-col>
 							</el-row>
 						</div>
@@ -80,7 +83,7 @@
 		  	</el-form-item>
 		  </el-form>
 			<!-- Buttons -->
-			<div style="text-align:left">
+			<div slot="footer">
 				<el-button type="primary" @click="ensure()" :loading="ctrl.submitLoading">确定</el-button>
 				<el-button @click="cancel()">取消</el-button>
 			</div>
@@ -136,6 +139,7 @@
 				for(let i=0;i<items.length;i++){
 					let item=items[i];
 					if(item.type=="input"){
+						// console.log(item);
 						if(item.input.isTwoCols){
 							let data1 = item.input.twoCols.data1;
 							let data2 = item.input.twoCols.data2;
@@ -223,15 +227,19 @@
 			}
 		},
 		mounted(){
-			if(!this.dialogData.errorHander){
-				alert("Vue input dialog: Need have a errorHander!")
-			}
+			// console.log(this.dialogData, this.dialogData.errorHander)
+			// if(!this.dialogData.errorHander){
+			// 	alert("Vue input dialog: Need have a errorHander!")
+			// }
 		}
 	}
 </script>
 
-<style scoped>
-.el-dialog__header{
+<style>
+/* .el-dialog__header{
   text-align:left;
-}
+} */
+/* .el-dialog__body{
+	padding: 20px 20px;
+} */
 </style>

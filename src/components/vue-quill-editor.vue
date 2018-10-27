@@ -64,7 +64,7 @@
           maxFileSize: 50, // unit is 'M'
           extensions: ['png', 'jpg', 'jpeg', 'bmp', 'txt', 'pdf', 'pptx'],  // include image and file
           whitelist:{  // just property value in the whitelist will be reserved
-            enable:false,
+            enable:true,
             list:{
               font:['bold',"italic","underline"],
               color:[],
@@ -77,7 +77,8 @@
       }
     },
     props: {
-      content: String,
+      ccontent: String,
+      value: String,
       disabled: Boolean,
       placeholder:{
         type:String,
@@ -99,9 +100,9 @@
       }
     },
     mounted: function() {
-      if(!this.fileOptions.errorHander){
-        alert("Vue quill editor: Need have a errorHander!")
-      }
+      // if(!this.fileOptions.errorHander){
+      //   alert("Vue quill editor: Need have a errorHander!")
+      // }
       this.initialize()
     },
     beforeDestroy: function() {
@@ -150,8 +151,8 @@
           self.options.readOnly = self.options.readOnly !== undefined ? self.options.readOnly : false
           self.quill = new Quill(self.$refs.editor, self.options)
           // set editor content
-          if (self.content) {
-            self.quill.pasteHTML(self.content)
+          if (self.value || self.content) {
+            self.quill.pasteHTML(self.value || self.content)
           }
           // mark model as touched if editor lost focus
           self.quill.on('selection-change', (range) => {
@@ -259,6 +260,16 @@
           }
         }
       },
+      value: function(newVal, oldVal) {
+        if (this.quill) {
+          if (!!newVal && newVal !== this._content) {
+            this._content = newVal
+            this.quill.pasteHTML(newVal)
+          } else if(!newVal) {
+            this.quill.setText('')
+          }
+        }
+      },
       disabled: function(newVal, oldVal) {
         if (this.quill) {
           this.quill.enable(!newVal)
@@ -271,5 +282,13 @@
 <style>
   .quill-editor img {
     max-width: 100%;
+  }
+  .ql-editor.ql-blank:before {
+    font-style: normal;
+    color: rgb(205, 208, 215);
+    font-size: 14px;
+  }
+  .ql-container.ql-snow {
+    min-height: 100px;
   }
 </style>
