@@ -100,7 +100,7 @@
     },
     mounted: function() {
       if(!this.fileOptions.errorHander){
-        alert("Need have a errorHander!")
+        alert("Vue quill editor: Need have a errorHander!")
       }
       this.initialize()
     },

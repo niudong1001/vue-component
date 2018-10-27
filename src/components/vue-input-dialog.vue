@@ -224,7 +224,7 @@
 		},
 		mounted(){
 			if(!this.dialogData.errorHander){
-				alert("Need have a errorHander!")
+				alert("Vue input dialog: Need have a errorHander!")
 			}
 		}
 	}
